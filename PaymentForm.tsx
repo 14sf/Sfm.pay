@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone } from 'lucide-react';
-import { usePaymentForm } from '../../hooks/usePaymentForm';
+import { Flag, Mail, Phone } from 'lucide-react';
+import { usePaymentForm } from '../../../hooks/usePaymentForm';
 
-const PaymentForm: React.FC = () => {
+const PaymentForm = () => {
   const { formData, handleChange, errors, validateField } = usePaymentForm();
 
   const handleBlur = (field: string) => {
@@ -11,7 +11,7 @@ const PaymentForm: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
         Payment Details
       </h3>
