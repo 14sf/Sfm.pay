@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Chat } from '../../../types/messenger';
-import { formatMessagePreview, formatTime } from '../../../utils/format';
+import { Chat } from '../../../../types/messenger';
+import { formatMessagePreview, formatTime } from '../../../../utils/format';
 
 interface ChatListProps {
   chats: Chat[];

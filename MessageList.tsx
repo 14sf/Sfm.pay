@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Message } from '../../../types/messenger';
+import { Message } from '../../../../types/messenger';
 import MessageItem from './MessageItem';
 
 interface MessageListProps {

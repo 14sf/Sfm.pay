@@ -1,83 +1,85 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Building, DollarSign, User } from 'lucide-react';
-import { Property } from '../../types/real-estate';
-import { RolePermissions, ROLE_PERMISSIONS } from '../../types/real-estate/roles';
+import { MapPin, DollarSign, Home } from 'lucide-react';
+import { Property } from '../../../types/real-estate/property';
 
 interface PropertyCardProps {
   property: Property;
   onSelect: (property: Property) => void;
-  onRequestMaintenance: () => void;
-  permissions?: RolePermissions;
 }
 
-const PropertyCard: React.FC<PropertyCardProps> = ({
-  property,
-  onSelect,
-  onRequestMaintenance,
-  permissions = ROLE_PERMISSIONS.Owner
-}) => {
-  const displayPrice = property.price || property.rentPrice || property.salePrice || 0;
-
+const PropertyCard: React.FC<PropertyCardProps> = ({ property, onSelect }) => {
   return (
     <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={() => onSelect(property)}
-      className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm cursor-pointer"
+      whileHover={{ y: -5 }}
+      className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
     >
-      <div className="flex items-center gap-4 mb-4">
-        <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
-          <Building className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+      <div className="relative h-48">
+        <img
+          src={property.images[0]}
+          alt={`${property.title} - ${property.category} in ${property.location.sector}`}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute top-4 right-4 px-2 py-1 bg-blue-600 text-white text-sm rounded">
+          {property.type === 'sale' ? 'For Sale' : 'For Rent'}
         </div>
-        <div>
-          <h3 className="font-medium text-gray-900 dark:text-white">{property.title || property.address}</h3>
-          <span className={`text-sm ${
-            property.status === 'Available' 
-              ? 'text-green-600 dark:text-green-400'
-              : property.status === 'Rented'
-              ? 'text-blue-600 dark:text-blue-400'
-              : 'text-gray-600 dark:text-gray-400'
-          }`}>
-            {property.status}
-          </span>
+        <div className="absolute bottom-4 right-4 px-2 py-1 bg-black/50 text-white text-sm rounded">
+          {property.images.length} photos
         </div>
       </div>
 
-      <div className="space-y-2">
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          {property.title}
+        </h3>
+
+        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-2">
+          <MapPin className="w-4 h-4" />
+          <span className="text-sm">{property.location.sector}</span>
+          {property.location.coordinates && (
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(
+                  `https://www.google.com/maps?q=${property.location.coordinates.latitude},${property.location.coordinates.longitude}`,
+                  '_blank'
+                );
+              }}
+              className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
+            >
+              View on map
+            </button>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-4">
+          <Home className="w-4 h-4" />
+          <span className="text-sm capitalize">{property.category}</span>
+          {property.features?.length > 0 && (
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              • {property.features.length} features
+            </span>
+          )}
+        </div>
+
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600 dark:text-gray-400">Price</span>
-          <div className="flex items-center text-gray-900 dark:text-white">
-            <DollarSign className="w-4 h-4 mr-1" />
-            <span>{displayPrice.toLocaleString()} SFM</span>
+          <div className="flex items-center text-blue-600 dark:text-blue-400">
+            <DollarSign className="w-5 h-5" />
+            <span className="text-xl font-bold">
+              {property.price.toLocaleString()} {property.type === 'rent' && '/mo'}
+            </span>
           </div>
-        </div>
 
-        {property.tenantId && (
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600 dark:text-gray-400">Tenant</span>
-            <div className="flex items-center text-gray-900 dark:text-white">
-              <User className="w-4 h-4 mr-1" />
-              <span>Active</span>
-            </div>
-          </div>
-        )}
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onSelect(property)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            View Details
+          </motion.button>
+        </div>
       </div>
-      
-      {/* Role-specific actions */}
-      {permissions.canRequestMaintenance && property.status === 'Rented' && (
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          onClick={(e) => {
-            e.stopPropagation();
-            onRequestMaintenance();
-          }}
-        >
-          Request Maintenance
-        </motion.button>
-      )}
     </motion.div>
   );
 };

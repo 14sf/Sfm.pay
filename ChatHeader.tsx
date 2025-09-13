@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { MoreVertical, Phone, Video, Search } from 'lucide-react';
-import { Chat } from '../../../types/messenger';
-import { useToast } from '../../../hooks/useToast';
+import { Chat } from '../../../../types/messenger';
+import { useToast } from '../../../../hooks/useToast';
 
 interface ChatHeaderProps {
   chat: Chat;
@@ -36,7 +36,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat }) => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => handleAction('Voice call')}
-          className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400"
+          className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <Phone className="w-5 h-5" />
         </motion.button>
@@ -45,7 +45,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat }) => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => handleAction('Video call')}
-          className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400"
+          className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <Video className="w-5 h-5" />
         </motion.button>
@@ -54,7 +54,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat }) => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => handleAction('Search')}
-          className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400"
+          className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <Search className="w-5 h-5" />
         </motion.button>
@@ -63,7 +63,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat }) => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => handleAction('More options')}
-          className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400"
+          className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <MoreVertical className="w-5 h-5" />
         </motion.button>

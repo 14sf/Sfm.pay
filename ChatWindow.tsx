@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Paperclip, Mic, Image, Smile } from 'lucide-react';
-import { Chat, Message } from '../../../types/messenger';
+import { Chat, Message } from '../../../../types/messenger';
 import MessageList from './MessageList';
 import ChatHeader from './ChatHeader';
-import { useToast } from '../../../hooks/useToast';
+import { useToast } from '../../../../hooks/useToast';
 
 interface ChatWindowProps {
   chat: Chat;
@@ -42,8 +42,15 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
         showToast('File size must be less than 16MB', 'error');
         return;
       }
+      
+      // Handle file upload
       showToast('File upload coming soon!', 'info');
     }
+  };
+
+  const handleVoiceRecord = () => {
+    setIsRecording(!isRecording);
+    showToast('Voice recording coming soon!', 'info');
   };
 
   return (
@@ -52,9 +59,10 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
 
       <MessageList 
         messages={chat.messages || []} 
-        onPaymentClick={() => onRequestPayment?.(100)}
+        onPaymentClick={() => onRequestPayment?.(100)} // Example amount
       />
 
+      {/* Message Input */}
       <div className="border-t border-gray-200 dark:border-gray-700 p-4">
         <div className="flex items-end gap-2">
           <div className="flex-1 relative">
@@ -79,7 +87,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => fileInputRef.current?.click()}
-              className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400"
+              className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
             >
               <Paperclip className="w-5 h-5" />
             </motion.button>
@@ -88,7 +96,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => fileInputRef.current?.click()}
-              className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400"
+              className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
             >
               <Image className="w-5 h-5" />
             </motion.button>
@@ -106,7 +114,7 @@ const ChatWindow: React.FC<ChatWindowProps> = ({
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={() => setIsRecording(!isRecording)}
+                onClick={handleVoiceRecord}
                 className={`p-2 rounded-full ${
                   isRecording
                     ? 'bg-red-600 text-white'

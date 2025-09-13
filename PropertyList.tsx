@@ -1,39 +1,50 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Home } from 'lucide-react';
-import PropertyListItem from './PropertyListItem';
-import { useProperties } from '../../../../hooks/real-estate/useProperties';
+import { Property } from '../../../types/real-estate/property';
+import PropertyCard from './PropertyCard';
 
-const PropertyList = () => {
-  const { properties } = useProperties();
+interface PropertyListProps {
+  properties: Property[];
+  isLoading: boolean;
+  onSelectProperty: (property: Property) => void;
+}
+
+const PropertyList: React.FC<PropertyListProps> = ({
+  properties,
+  isLoading,
+  onSelectProperty
+}) => {
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <Home className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Properties
-          </h2>
-        </div>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {properties.map((property, index) => (
+        <motion.div
+          key={property.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
         >
-          Add Property
-        </motion.button>
-      </div>
-
-      <div className="space-y-4">
-        {properties.map((property, index) => (
-          <PropertyListItem
-            key={property.id}
+          <PropertyCard
             property={property}
-            index={index}
+            onSelect={onSelectProperty}
           />
-        ))}
-      </div>
+        </motion.div>
+      ))}
+
+      {properties.length === 0 && (
+        <div className="col-span-full text-center py-12">
+          <p className="text-gray-500 dark:text-gray-400">
+            No properties found matching your criteria
+          </p>
+        </div>
+      )}
     </div>
   );
 };

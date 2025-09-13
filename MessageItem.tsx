@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Check, CheckCheck, Clock, CreditCard } from 'lucide-react';
-import { Message } from '../../../types/messenger';
-import { formatTime } from '../../../utils/format';
+import { Message } from '../../../../types/messenger';
+import { formatTime } from '../../../../utils/format';
 
 interface MessageItemProps {
   message: Message;
