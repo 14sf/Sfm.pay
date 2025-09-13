@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Plus, Minus, DollarSign } from 'lucide-react';
-import { Book } from '../../types/book';
+import { X, Plus, Minus, DollarSign, Upload } from 'lucide-react';
 import { useToast } from '../../hooks/useToast';
+import DocumentUploadModal from '../documents/DocumentUploadModal';
 
-interface TransactionFormProps {
-  book: Book;
+interface TransactionModalProps {
   type: 'addition' | 'subtraction';
+  onSubmit: (data: {
+    amount: number;
+    description: string;
+    category: string;
+    attachments?: File[];
+  }) => void;
   onClose: () => void;
 }
 
-const TransactionForm: React.FC<TransactionFormProps> = ({
-  book,
+const TransactionModal: React.FC<TransactionModalProps> = ({
   type,
+  onSubmit,
   onClose
 }) => {
   const [formData, setFormData] = useState({
@@ -20,6 +25,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
     description: '',
     category: ''
   });
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [showUploadModal, setShowUploadModal] = useState(false);
   const { showToast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -29,23 +36,15 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       return;
     }
 
-    // In a real app, this would make an API call
-    const transaction = {
-      id: Date.now().toString(),
-      type,
-      amount: formData.amount,
-      description: formData.description,
-      category: formData.category,
-      timestamp: Date.now(),
-      createdBy: 'user@example.com'
-    };
+    onSubmit({
+      ...formData,
+      attachments
+    });
+  };
 
-    // Update book balance and add transaction
-    book.balance += type === 'addition' ? formData.amount : -formData.amount;
-    book.transactions.unshift(transaction);
-
-    showToast(`Transaction ${type === 'addition' ? 'added' : 'subtracted'} successfully!`, 'success');
-    onClose();
+  const handleFileUpload = (file: File) => {
+    setAttachments([...attachments, file]);
+    showToast('Document attached successfully!', 'success');
   };
 
   return (
@@ -82,7 +81,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Amount ({book.currency})
+              Amount
             </label>
             <div className="relative">
               <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -131,6 +130,47 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
             </select>
           </div>
 
+          {/* Attachments */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Attachments
+              </label>
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowUploadModal(true)}
+                className="text-blue-600 dark:text-blue-400 text-sm flex items-center gap-1"
+              >
+                <Upload className="w-4 h-4" />
+                Add Document
+              </motion.button>
+            </div>
+            
+            {attachments.length > 0 && (
+              <div className="space-y-2">
+                {attachments.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  >
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                      {file.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setAttachments(attachments.filter((_, i) => i !== index))}
+                      className="text-red-600 dark:text-red-400"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="flex justify-end gap-3 pt-4">
             <motion.button
               type="button"
@@ -156,8 +196,18 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
           </div>
         </form>
       </motion.div>
+
+      {showUploadModal && (
+        <DocumentUploadModal
+          onUpload={(file, type) => {
+            handleFileUpload(file);
+            setShowUploadModal(false);
+          }}
+          onClose={() => setShowUploadModal(false)}
+        />
+      )}
     </div>
   );
 };
 
-export default TransactionForm;
+export default TransactionModal;

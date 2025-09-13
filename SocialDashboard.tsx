@@ -1,15 +1,16 @@
+```tsx
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useSocialContext } from '../../../contexts/SocialContext';
-import FeedSection from '../feed/FeedSection';
-import MessagesSection from '../messages/MessagesSection';
-import GroupsSection from '../groups/GroupsSection';
-import BookSection from '../books/BookSection';
-import PaymentSection from '../payments/PaymentSection';
-import MarketSection from '../market/MarketSection';
-import NotificationsPanel from '../notifications/NotificationsPanel';
+import { useSocialContext } from '../../contexts/SocialContext';
+import FeedSection from './feed/FeedSection';
+import MessagesSection from './messages/MessagesSection';
+import GroupsSection from './groups/GroupsSection';
+import BookSection from './books/BookSection';
+import PaymentSection from './payments/PaymentSection';
+import MarketSection from './market/MarketSection';
+import NotificationsPanel from './notifications/NotificationsPanel';
 
-const SocialDashboard = () => {
+const SocialDashboard: React.FC = () => {
   const { activeSection } = useSocialContext();
 
   const renderSection = () => {
@@ -53,3 +54,4 @@ const SocialDashboard = () => {
 };
 
 export default SocialDashboard;
+```

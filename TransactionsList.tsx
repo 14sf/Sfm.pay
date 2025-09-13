@@ -1,56 +1,64 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Book } from '../../../types/book';
-import TransactionItem from './TransactionItem';
-import { useTeamAccess } from '../../../hooks/useTeamAccess';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Book } from '../../types/book';
 
 interface TransactionsListProps {
   book: Book;
 }
 
 const TransactionsList: React.FC<TransactionsListProps> = ({ book }) => {
-  const { canViewTransactions } = useTeamAccess(book);
-
-  if (!canViewTransactions) {
-    return null;
-  }
-
   if (!book.transactions.length) {
     return (
-      <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
-        No transactions yet
-      </p>
+      <div className="text-center py-8">
+        <p className="text-gray-500 dark:text-gray-400">
+          No transactions yet
+        </p>
+      </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      <h4 className="font-medium text-gray-900 dark:text-white flex items-center justify-between">
-        Recent Transactions
-        {book.transactions.length > 5 && (
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700"
-          >
-            View All
-          </motion.button>
-        )}
-      </h4>
-      
-      <div className="space-y-3">
-        {book.transactions.slice(0, 5).map((transaction, index) => (
-          <TransactionItem
-            key={transaction.id}
-            type={transaction.type}
-            description={transaction.description}
-            amount={transaction.amount}
-            timestamp={new Date(transaction.timestamp).toLocaleString()}
-            currency={book.currency}
-            delay={index * 0.1}
-          />
-        ))}
-      </div>
+      {book.transactions.map((transaction, index) => (
+        <motion.div
+          key={transaction.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
+          className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+        >
+          <div className="flex items-center gap-3">
+            <div className={`p-2 rounded-lg ${
+              transaction.type === 'addition'
+                ? 'bg-green-100 dark:bg-green-900'
+                : 'bg-red-100 dark:bg-red-900'
+            }`}>
+              {transaction.type === 'addition' ? (
+                <ArrowUpRight className="w-4 h-4 text-green-600 dark:text-green-400" />
+              ) : (
+                <ArrowDownRight className="w-4 h-4 text-red-600 dark:text-red-400" />
+              )}
+            </div>
+            <div>
+              <p className="font-medium text-gray-900 dark:text-white">
+                {transaction.description}
+              </p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {new Date(transaction.timestamp).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+          <span className={`font-medium ${
+            transaction.type === 'addition'
+              ? 'text-green-600 dark:text-green-400'
+              : 'text-red-600 dark:text-red-400'
+          }`}>
+            {transaction.type === 'addition' ? '+' : '-'}
+            {transaction.amount.toLocaleString()}
+          </span>
+        </motion.div>
+      ))}
     </div>
   );
 };
