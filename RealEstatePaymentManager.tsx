@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Home, Shield, Calendar, DollarSign, ClipboardCheck } from 'lucide-react';
-import { useToast } from '../../../hooks/useToast';
+import { Building, Shield, Calendar, DollarSign, ClipboardCheck, Home } from 'lucide-react';
+import { useToast } from '../../hooks/useToast';
+import PaymentBookSync from './payment/PaymentBookSync';
+import SFMPayButton from '../payment/SFMPayButton';
 
 interface PaymentSchedule {
   frequency: 'weekly' | 'biweekly' | 'monthly';
@@ -15,7 +17,7 @@ interface PropertyExpense {
   frequency: string;
 }
 
-const RealEstatePaymentManager = () => {
+const RealEstatePaymentManager: React.FC = () => {
   const [propertyRef, setPropertyRef] = useState('');
   const [totalAmount, setTotalAmount] = useState(0);
   const [schedule, setSchedule] = useState<PaymentSchedule>({
@@ -23,7 +25,7 @@ const RealEstatePaymentManager = () => {
     amount: 0,
     dueDate: ''
   });
-  const [expenses, setExpenses] = useState<PropertyExpense[]>([
+  const [expenses] = useState<PropertyExpense[]>([
     { type: 'cleaning', amount: 50, frequency: 'monthly' },
     { type: 'security', amount: 100, frequency: 'monthly' },
     { type: 'maintenance', amount: 200, frequency: 'quarterly' }
@@ -32,9 +34,8 @@ const RealEstatePaymentManager = () => {
 
   const handlePayment = async () => {
     try {
-      showToast('Processing escrow payment...', 'info');
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      showToast('Payment processed and held in escrow!', 'success');
+      showToast('Processing payment...', 'info');
+      // Payment will be handled by SFMPayButton
     } catch (error) {
       showToast('Payment failed. Please try again.', 'error');
     }

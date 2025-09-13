@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X, Upload, MapPin, Home, DollarSign } from 'lucide-react';
-import { Property } from '../../../types/market';
+import { Property } from '../../types/market';
 
 interface PropertyFormProps {
   onSubmit: (property: Omit<Property, 'id' | 'sellerId'>) => void;
@@ -23,7 +23,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onClose }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    if (formData.title.trim() && formData.category) {
+      onSubmit(formData);
+      setFormData({ name: '', currency: 'SFM', category: '' });
+    }
   };
 
   return (
