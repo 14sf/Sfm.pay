@@ -1,25 +1,20 @@
 import { useState, useEffect } from 'react';
-
-export interface MaintenanceRequest {
-  id: string;
-  title: string;
-  property: string;
-  status: 'pending' | 'in-progress' | 'completed';
-  priority: 'high' | 'medium' | 'low';
-  createdAt: string;
-}
+import { MaintenanceRequest } from '../../types/real-estate';
+import { useToast } from '../useToast';
 
 export const useMaintenanceRequests = () => {
   const [requests, setRequests] = useState<MaintenanceRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { showToast } = useToast();
 
   useEffect(() => {
-    // Simulate API call
     const fetchRequests = async () => {
       setIsLoading(true);
       try {
-        // In a real app, this would be an API call
-        const data = [
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const mockRequests = [
           {
             id: '1',
             title: 'Plumbing Issue',
@@ -36,17 +31,42 @@ export const useMaintenanceRequests = () => {
             priority: 'medium',
             createdAt: '1d ago'
           }
-        ] as MaintenanceRequest[];
-        setRequests(data);
+        ];
+        
+        setRequests(mockRequests);
       } catch (error) {
         console.error('Error fetching maintenance requests:', error);
+        showToast('Failed to load maintenance requests', 'error');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchRequests();
-  }, []);
+  }, [showToast]);
 
-  return { requests, isLoading };
+  const createRequest = async (data: Omit<MaintenanceRequest, 'id' | 'createdAt'>) => {
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const newRequest = {
+        ...data,
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString()
+      };
+      
+      setRequests(prev => [newRequest, ...prev]);
+      showToast('Maintenance request created successfully!', 'success');
+    } catch (error) {
+      showToast('Failed to create maintenance request', 'error');
+      throw error;
+    }
+  };
+
+  return {
+    requests,
+    isLoading,
+    createRequest
+  };
 };

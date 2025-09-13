@@ -1,84 +1,64 @@
-import React, { useState } from 'react';
-import TransferTabs from './TransferTabs';
-import TransferForm from './TransferForm';
-import TransferReceiveForm from './TransferReceiveForm';
-import TransferHistory from './TransferHistory';
-import { useToast } from '../../../hooks/useToast';
-import useNotifications from '../../../hooks/useNotifications';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { X } from 'lucide-react';
+import { Contact } from '../../types';
+import ContactListItem from './ContactListItem';
 
-const TransferSection: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'send' | 'receive'>('send');
-  const [showForm, setShowForm] = useState(false);
-  const { showToast } = useToast();
-  const { sendTransferNotification } = useNotifications('current-user');
+interface ContactListProps {
+  onSelectContact: (contact: Contact) => void;
+  onClose: () => void;
+}
 
-  const handleTransfer = async (data: any) => {
-    try {
-      showToast('Processing transfer...', 'info');
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      await sendTransferNotification({
-        amount: data.amount,
-        currency: data.currency,
-        recipient: data.recipientName
-      });
-      
-      showToast('Transfer completed successfully!', 'success');
-      setShowForm(false);
-    } catch (error) {
-      showToast('Transfer failed. Please try again.', 'error');
+const ContactList: React.FC<ContactListProps> = ({ onSelectContact, onClose }) => {
+  // Mock contacts for demonstration
+  const contacts: Contact[] = [
+    {
+      id: '1',
+      name: 'John Doe',
+      phone: '+250789123456',
+      status: 'online',
+      unreadCount: 0,
+      isBlocked: false,
+      isMuted: false
+    },
+    {
+      id: '2',
+      name: 'Jane Smith',
+      phone: '+250789123457',
+      status: 'offline',
+      unreadCount: 0,
+      isBlocked: false,
+      isMuted: false
     }
-  };
-
-  const handleReceive = async (data: any) => {
-    try {
-      showToast('Processing receive request...', 'info');
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      await sendTransferNotification({
-        amount: data.amount,
-        currency: data.currency,
-        recipient: 'You'
-      });
-      
-      showToast('Receive request completed successfully!', 'success');
-      setShowForm(false);
-    } catch (error) {
-      showToast('Receive request failed. Please try again.', 'error');
-    }
-  };
+  ];
 
   return (
-    <div className="space-y-6">
-      <TransferTabs activeTab={activeTab} onTabChange={setActiveTab} />
+    <div className="h-full flex flex-col">
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          New Chat
+        </h3>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={onClose}
+          className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400"
+        >
+          <X className="w-5 h-5" />
+        </motion.button>
+      </div>
 
-      {showForm ? (
-        activeTab === 'send' ? (
-          <TransferForm
-            onSubmit={handleTransfer}
-            onCancel={() => setShowForm(false)}
+      <div className="flex-1 overflow-y-auto">
+        {contacts.map((contact) => (
+          <ContactListItem
+            key={contact.id}
+            contact={contact}
+            onClick={() => onSelectContact(contact)}
           />
-        ) : (
-          <TransferReceiveForm
-            onSubmit={handleReceive}
-            onCancel={() => setShowForm(false)}
-          />
-        )
-      ) : (
-        <>
-          <div className="flex justify-end">
-            <button
-              onClick={() => setShowForm(true)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              {activeTab === 'send' ? 'New Transfer' : 'Request Transfer'}
-            </button>
-          </div>
-          <TransferHistory />
-        </>
-      )}
+        ))}
+      </div>
     </div>
   );
 };
 
-export default TransferSection;
+export default ContactList;

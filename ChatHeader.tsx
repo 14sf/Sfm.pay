@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { MoreVertical, Phone, Video, Search } from 'lucide-react';
-import { Chat } from '../../../../types/messenger';
+import { Chat } from '../../types';
 import { useToast } from '../../../../hooks/useToast';
 
 interface ChatHeaderProps {
@@ -25,9 +25,11 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ chat }) => {
         />
         <div>
           <h3 className="font-medium text-gray-900 dark:text-white">
-            {chat.participants.join(', ')}
+            {chat.type === 'group' ? chat.name : chat.participants[0]}
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Online</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {chat.type === 'group' ? `${chat.participants.length} participants` : 'Online'}
+          </p>
         </div>
       </div>
 
