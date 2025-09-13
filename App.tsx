@@ -1,29 +1,12 @@
-import React from 'react';
-import { Toaster } from 'react-hot-toast';
-import MainPage from './pages/MainPage';
-import AuthGuard from './components/auth/AuthGuard';
-import { AuthProvider } from './contexts/AuthContext';
-import { ProfileProvider } from './contexts/ProfileContext';
-import { BookProvider } from './contexts/BookContext';
-import { MessengerProvider } from './features/messenger/contexts/MessengerContext';
+import React from 'react'
 
-const App = () => {
+function App() {
   return (
-    <>
-      <Toaster position="top-right" />
-      <AuthProvider>
-        <ProfileProvider>
-          <BookProvider>
-            <MessengerProvider>
-              <AuthGuard>
-                <MainPage />
-              </AuthGuard>
-            </MessengerProvider>
-          </BookProvider>
-        </ProfileProvider>
-      </AuthProvider>
-    </>
-  );
-};
+    <div>
+      <h1>Hello from App.tsx 👋</h1>
+      <p>Your Vite + React + TypeScript project is working!</p>
+    </div>
+  )
+}
 
-export default App;
+export default App
