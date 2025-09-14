@@ -1,12 +1,12 @@
-import React from 'react'
+import './App.css';
 
 function App() {
   return (
-    <div>
-      <h1>Hello from App.tsx 👋</h1>
-      <p>Your Vite + React + TypeScript project is working!</p>
-    </div>
-  )
+    <>
+      <h1>SFM - Songa Finance Manager</h1>
+      <p>Your Vite + React App is working!</p>
+    </>
+  );
 }
 
-export default App
+export default App;
