@@ -1,3 +1,3 @@
 export default function Login() {
-  return <h2>🔐 Connexion</h2>
+  return <h2 className="text-xl font-semibold">🔐 Connexion</h2>
 }
